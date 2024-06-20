@@ -1,7 +1,9 @@
+import time
 import urllib.parse
+
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright, TimeoutError
-import time
+
 
 def scroll_restaurants_list(page):
     """
@@ -30,15 +32,16 @@ def scroll_restaurants_list(page):
                 print("Timeout occurred while scrolling.")
                 break
 
+
 def get_restaurants(encoding_landmark):
     """
     Get a list of restaurants near the specified landmark.
 
     Args:
-        encoding_nearby_landmark (str): The URL encoded landmark to search near.
+        encoding_landmark (str): The URL encoded landmark to search near.
 
     Returns:
-        list: A list of tuples, each containing the name and link of a restaurant.
+        list: A list of dictionaries, each containing the name and link of a restaurant.
     """
     restaurants = []
     last_update_time = time.time()  # Initialize the last update time
@@ -62,14 +65,15 @@ def get_restaurants(encoding_landmark):
             while True:
                 div_aifcqe = page.query_selector(
                     '.m6QErb.DxyBCb.kA9KIf.dS8AEf.XiKgde.ecceSd')  # Find div elements with class 'aIFcqe'
-                hfpxzc_elements = div_aifcqe.query_selector_all('.hfpxzc')  # Find elements with specific class in that div
+                hfpxzc_elements = div_aifcqe.query_selector_all(
+                    '.hfpxzc')  # Find elements with specific class in that div
 
                 for item in hfpxzc_elements:
                     link = item.get_attribute('href')
                     name = item.get_attribute('aria-label')
 
-                    if (name, link) not in restaurants:
-                        restaurants.append((name, link))
+                    if not any(rest['link'] == link for rest in restaurants):
+                        restaurants.append({'name': name, 'link': link})
                         last_update_time = time.time()  # Update the last update time
 
                         count += 1
@@ -88,8 +92,8 @@ def get_restaurants(encoding_landmark):
                         link = item.get_attribute('href')
                         name = item.get_attribute('aria-label')
                         print(f'Count {count}: {name}')
-                        if (name, link) and (name, link) not in restaurants:
-                            restaurants.append((name, link))
+                        if not any(rest['link'] == link for rest in restaurants):
+                            restaurants.append({'name': name, 'link': link})
                             count += 1
                             print(f'Count {count}: {name}')
 
@@ -100,6 +104,8 @@ def get_restaurants(encoding_landmark):
         print("An error occurred:", e)
     finally:
         return restaurants
+
+
 
 def is_at_page_bottom(page):
     """
@@ -119,7 +125,8 @@ def is_at_page_bottom(page):
         return len(elements) > 0
     return False
 
-def URL_encoding(nearby_landmark):
+
+def url_encoding(nearby_landmark):
     """
     URL encode the given nearby landmark.
 
@@ -130,4 +137,4 @@ def URL_encoding(nearby_landmark):
         str: The URL encoded landmark.
     """
     encoding_landmark = urllib.parse.quote(nearby_landmark)
-    return  encoding_landmark
+    return encoding_landmark

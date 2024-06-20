@@ -1,6 +1,9 @@
 # EatWhat Discord Bot
-This Discord bot helps users find nearby open restaurants and record searched landmarks. It supports multiple users and offers an easy-to-use command list and landmark search record menu. Designed to be simple and clear, it provides rich functionality and detailed consideration. Whether you're looking for a good restaurant or recording nearby restaurants of your landmarks, this bot is your powerful assistant.
 
+This Discord bot helps users find nearby open restaurants and record searched landmarks. It supports multiple users and
+offers an easy-to-use command list and landmark search record menu. Designed to be simple and clear, it provides rich
+functionality and detailed consideration. Whether you're looking for a good restaurant or recording nearby restaurants
+of your landmarks, this bot is your powerful assistant.
 
 ## Table of Contents
 
@@ -19,12 +22,6 @@ This Discord bot helps users find nearby open restaurants and record searched la
 
 ### Required Packages
 
-- `aiofiles`
-- `beautifulsoup4`
-- `nextcord`
-- `playwright`
-- `python-dotenv`
-
 You can install the required packages using the following command:
 
 ```bash
@@ -33,45 +30,53 @@ pip install -r requirements.txt
 
 ## Environment Variable
 
-1. You need to visit [Discord Developers](https://discord.com/developers/applications) and create an application to obtain a `Token`.
+1. You need to visit [Discord Developers](https://discord.com/developers/applications) and create an application to
+   obtain a `Token`.
 
 2. To run the Discord bot and configure the deployment settings, you need to set the following environment variable :
 
 ```python
-BOT_API="YOUR_BOT_TOKEN"
+BOT_TOKEN = "YOUR_BOT_TOKEN"
 ```
 
 ## Starting the Bot
 
-1. Double-click on `RunBot.bat` in the folder to start running.
+cd to your current project path.
 
-2. After executing `RunBot.bat`, CMD will appear. If there are no error messages, the robot will be activated. You can then return to your Discord and start using it!
+```bash
+python bot.py
+```
 
 ### Inviting the Bot to the Server
 
-Remember to invite the bot to the server. The invitation link can be generated at [Discord Developers](https://discord.com/developers/applications).
-
+Remember to invite the bot to the server. The invitation link can be generated
+at [Discord Developers](https://discord.com/developers/applications).
 
 ## Bot Commands
 
-Once the bot is running and connected to Discord, you can interact with it using various commands. These commands can be customized according to the bot's functionalities.
+Once the bot is running and connected to Discord, you can interact with it using various commands. These commands can be
+customized according to the bot's functionalities.
 
 - `/eatwhat landmark:` -> Enter the landmark you want to search for nearby restaurants.
 
-- `/ewrandom request_id:` -> Select a landmark you have previously entered from the  shortcut menu, and the bot will randomly recommend a nearby restaurant.
+- `/ewrandom request_id:` -> Select a landmark you have previously entered from the shortcut menu, and the bot will
+  randomly recommend a nearby restaurant.
 
-- `/ewclear request_id:` ->  Clears a specific landmark record that you have previously entered and removes it from the shortcut menu. Please note, this command can only clear one landmark record at a time, not all at once.
+- `/ewclear request_id:` ->  Clears a specific landmark record that you have previously entered and removes it from the
+  shortcut menu. Please note, this command can only clear one landmark record at a time, not all at once.
 
 ## Contributing
-If you'd like to contribute to this app development, feel free to fork this repository, make your changes, and submit a pull request. Please ensure your code follows the project's coding standards and includes appropriate documentation for any new features or changes.
+
+If you'd like to contribute to this app development, feel free to fork this repository, make your changes, and submit a
+pull request. Please ensure your code follows the project's coding standards and includes appropriate documentation for
+any new features or changes.
 
 ## License
+
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
 ## Contact Information
-If you have any questions or suggestions, please feel free to contact the project maintainer:
 
-- **Email**: npustb11156057@gmail.com
-- **GitHub**: [LiamoKarca](https://github.com/LiamoKarca)
+If you have any questions or issues related to the project, feel free to open an issue on GitHub.
 
 ---
