@@ -106,7 +106,6 @@ def get_restaurants(encoding_landmark):
         return restaurants
 
 
-
 def is_at_page_bottom(page):
     """
     Check if the bottom of the page is reached.

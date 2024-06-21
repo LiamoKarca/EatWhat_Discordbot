@@ -9,7 +9,7 @@ from nextcord.ui import Button, View
 from .Crawler import get_restaurants, url_encoding
 
 # Global variable to store user-specific restaurant data
-user_restaurant_data = {}
+USER_RESTAURANT_DATA = {}
 
 
 def get_error_embed_message(error_embed_message: Exception) -> Embed:
@@ -73,7 +73,7 @@ def check_user_data(user_id: int, request_id: str) -> bool:
     Returns:
         bool: True if both user_id and request_id exist in the user_restaurant_data, False otherwise.
     """
-    return user_id in user_restaurant_data and request_id in user_restaurant_data[user_id]
+    return user_id in USER_RESTAURANT_DATA and request_id in USER_RESTAURANT_DATA[user_id]
 
 
 def check_restaurant_data(user_id: int, request_id: str) -> bool:
@@ -87,8 +87,8 @@ def check_restaurant_data(user_id: int, request_id: str) -> bool:
     Returns: bool: True if both user_id and request_id exist in the user_restaurant_data and the data is not empty,
     False otherwise.
     """
-    return user_id in user_restaurant_data and request_id in user_restaurant_data[user_id] and \
-        user_restaurant_data[user_id][request_id]
+    return user_id in USER_RESTAURANT_DATA and request_id in USER_RESTAURANT_DATA[user_id] and \
+        USER_RESTAURANT_DATA[user_id][request_id]
 
 
 class RestaurantCommands(commands.Cog):
@@ -143,11 +143,11 @@ class RestaurantCommands(commands.Cog):
                 colour=nextcord.Color.green()
             ).add_field(
                 name="隨機推薦餐廳",
-                value="</ewrandom:1252306339430928466>",
+                value="</ewrandom:1253382872853905468>",
                 inline=False
             ).add_field(
                 name="「新增 or 重新探索」地標的鄰近餐廳",
-                value="</eatwhat:1252306335610044427>",
+                value="</eatwhat:1253768332675514432>",
                 inline=False
             )
         ]
@@ -158,7 +158,7 @@ class RestaurantCommands(commands.Cog):
 
         return message
 
-    @nextcord.slash_command(name="eatwhat", description="Search nearby restaurants")
+    @nextcord.slash_command(name="eatwhat", description="Search nearby restaurants", guild_ids=[479164051230818306])
     async def eatwhat(self, interaction: Interaction, landmark: str = SlashOption(description="Landmark to search")):
         """
         Slash command to search for nearby restaurants.
@@ -169,7 +169,7 @@ class RestaurantCommands(commands.Cog):
         """
         user_id = interaction.user.id
 
-        user_restaurant_data.setdefault(user_id, {})[landmark] = []
+        USER_RESTAURANT_DATA.setdefault(user_id, {})[landmark] = []
         embed_message = get_searching_message(landmark=landmark)
 
         self.message = await interaction.send(embed=embed_message)
@@ -177,9 +177,9 @@ class RestaurantCommands(commands.Cog):
         try:
             encoding_landmark = url_encoding(f"{landmark} 附近餐廳")
             restaurant_data = await asyncio.to_thread(get_restaurants, encoding_landmark)
-            user_restaurant_data[user_id][landmark] = restaurant_data
+            USER_RESTAURANT_DATA[user_id][landmark] = restaurant_data
 
-            self.current_data, self.max_chunks = await get_restaurants_data(user_restaurant_data[user_id][landmark])
+            self.current_data, self.max_chunks = await get_restaurants_data(USER_RESTAURANT_DATA[user_id][landmark])
             self.page = 0
             self.landmark = landmark
             await self.update_embed(interaction)
@@ -248,7 +248,7 @@ class RestaurantCommands(commands.Cog):
             self.page += 1
             await self.update_embed(interaction)
 
-    @nextcord.slash_command(name="ewrandom", description="隨機推薦餐廳")
+    @nextcord.slash_command(name="ewrandom", description="隨機推薦餐廳", guild_ids=[479164051230818306])
     async def ewrandom(self, interaction: Interaction, request_id: str = SlashOption(description="你想搜尋的地標")):
         """
         Slash command to randomly recommend a restaurant.
@@ -275,7 +275,7 @@ class RestaurantCommands(commands.Cog):
             await interaction.response.send_message(embed=embed_message)
             return
 
-        random_restaurant = random.choice(user_restaurant_data[user_id][request_id])
+        random_restaurant = random.choice(USER_RESTAURANT_DATA[user_id][request_id])
         embed_message = Embed(
             title=request_id,
             description=f"[{random_restaurant['name']}]({random_restaurant['link']})",
@@ -296,12 +296,12 @@ class RestaurantCommands(commands.Cog):
         If the user has restaurant data, it provides an autocomplete list of landmarks that match the user's query.
         """
         user_id = interaction.user.id
-        if user_id in user_restaurant_data:
-            request_ids = [request_id for request_id in user_restaurant_data[user_id].keys() if
+        if user_id in USER_RESTAURANT_DATA:
+            request_ids = [request_id for request_id in USER_RESTAURANT_DATA[user_id].keys() if
                            query.lower() in request_id.lower()]
             await interaction.response.send_autocomplete(request_ids[:25])
 
-    @nextcord.slash_command(name="ewclear", description="清除指定地標的餐廳資料")
+    @nextcord.slash_command(name="ewclear", description="清除指定地標的餐廳資料", guild_ids=[479164051230818306])
     async def ewclear(self, interaction: Interaction, request_id: str = SlashOption(description="你想清除的地標")):
         """
         Slash command to clear restaurant data for a specific landmark.
@@ -328,7 +328,7 @@ class RestaurantCommands(commands.Cog):
             await interaction.response.send_message(embed=not_have_restaurant_data_message)
             return
 
-        del user_restaurant_data[user_id][request_id]
+        del USER_RESTAURANT_DATA[user_id][request_id]
 
         cleared_message = Embed(
             title="已清除餐廳數據",
@@ -349,8 +349,8 @@ class RestaurantCommands(commands.Cog):
         If the user has restaurant data, it provides an autocomplete list of landmarks that match the user's query.
         """
         user_id = interaction.user.id
-        if user_id in user_restaurant_data:
-            request_ids = [request_id for request_id in user_restaurant_data[user_id].keys() if
+        if user_id in USER_RESTAURANT_DATA:
+            request_ids = [request_id for request_id in USER_RESTAURANT_DATA[user_id].keys() if
                            query.lower() in request_id.lower()]
             await interaction.response.send_autocomplete(request_ids[:25])
 
